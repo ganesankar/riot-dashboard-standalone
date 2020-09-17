@@ -1,0 +1,4 @@
+theme: jekyll-theme-cayman
+sass:
+  sass_dir:         style
+  style:            :compressed
