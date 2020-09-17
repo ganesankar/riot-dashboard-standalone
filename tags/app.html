@@ -1,0 +1,62 @@
+<app>
+  <login if="{!state.isLoggedIn}"></login>
+  <div id="wrapper" if="{state.isLoggedIn}" class="page-container">
+    <top-section></top-section>
+    <sidebar page="{state.page}" on-change="{onPageChanged}"></sidebar>
+    <main style="min-height: 80vh;">
+    <div is="{state.page}" class="container-fluid"></div>
+    <bottom-section></bottom-section>
+  </main>
+  </div>
+
+  <!-- Scroll to Top Button-->
+  
+
+  <script>
+    export default {
+      state: {
+        isLoggedIn: false,
+        page: 'page-dashboard',
+        subLogin: null,
+        subPage: null
+      },
+      onMounted(props, state) {
+        const subLogin = this.query.select('isLoggedIn').subscribe(val => {
+          this.update({ isLoggedIn: val });
+        });
+        this.state.subLogin = subLogin;
+        
+        const subPage = this.query.select('page').subscribe(val => {
+          //console.log('val is ',val);
+          this.update({ page: val });
+        });
+        this.state.subPage = subPage;
+      },
+      onUnmounted(props,state){
+        this.state.subLogin.unsubscribe();
+        this.state.subPage.unsubscribe();
+      }
+
+    }
+  </script>
+  <style>
+    /* Top Level CSS */
+    table {
+			table-layout: fixed;
+			width: 100%;
+		}
+		.fa-2x {
+			font-size: 1em;
+			margin-left: 5px;
+		}
+		.clickable {
+			cursor: pointer;
+		}
+    sidebar {
+      background-color: #224abe;
+    }
+    login {
+      width: 100%;
+    }
+  </style>
+</app>

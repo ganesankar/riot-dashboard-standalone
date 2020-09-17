@@ -1,0 +1,72 @@
+<page-details>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-2">
+        <breadcrumb></breadcrumb>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="{toggleFavorite}">
+        <i class="fas fa-star fa-sm { (state.item.favorite === true) ? ' ' : 'text-white-50' }"></i> Favorite</a>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Content Column -->
+        <div class="col-lg-12 mb-4">
+            <!-- Project Card Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{state.item.name}</h6>
+                </div>
+                <div class="card-body">
+                    Age: {state.item.age} years old<br/>
+                    Gender: {state.item.gender}<br/>
+                    Email: {state.item.email}<br/>
+                    Phone: {state.item.phone}<br/>
+                    Address: {state.item.address}<br/>
+                    Balance: {state.item.balance}<br/>
+                    Friends: 
+                    <span each="{ (friend,index) in state.item.friends}">
+                        <a href="#/list/{friend.id}" onclick="{()=>service.pushBreadcrumb(friend.name,friend.id)}" class="ml-1">{friend.name}</a>
+                        <span if="{state.item.friends.length-1 != index}">,</span>
+                    </span>
+                    <br/>
+                    <hr/>
+                    <span each="tag in state.item.tags" class="badge badge-primary mr-2">{tag}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        export default {
+            state: {
+                item:{},
+                subParam:null,
+                subList:null
+            },
+            onMounted(props,state){
+                const subList = this.query.select('list').subscribe(list=> {
+                    //console.log('list changed',list);
+                    const id = parseInt(this.query.getValue().params.id);
+                    const item = list.find(item=>item.id === id);
+                    this.update({item:item});
+                });
+                this.state.subList = subList;
+
+                const subParam = this.query.select('params').subscribe(params=>{
+                    this.service.getDetails(parseInt(params.id));
+                });
+                this.state.subParam = subParam;
+            },
+            toggleFavorite(){
+                // Note: ".favorite" property is omitted in .json files in order to simulate persistante
+                // otherwise, server value will wipe when you go back
+                this.service.updateFavorite(parseInt(this.state.item.id), !this.state.item.favorite);
+            },
+            onUnmounted(props,state){
+                this.state.subList.unsubscribe();
+                this.state.subParam.unsubscribe();
+            }
+        }
+    </script>
+    <style>
+    </style>
+</page-details>
