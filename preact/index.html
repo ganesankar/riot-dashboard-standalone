@@ -1,201 +1,124 @@
-<html><head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>preact-router + hash history</title>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+
+
+    <title>CodePen - Preact + HTM + Preact-Router</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-      <script type="text/javascript" src="https://unpkg.com/@babel/standalone@7.11.6/babel.min.js"></script>
-  
-    <script type="text/javascript" src="/js/lib/dummy.js"></script>
-  
-      <link rel="stylesheet" type="text/css" href="/css/result-light.css">
-  
-        <script type="text/javascript" src="https://unpkg.com/preact"></script>
-        <script type="text/javascript" src="https://unpkg.com/preact-router"></script>
-        <script type="text/javascript" src="https://unpkg.com/history@4.6.1/umd/history.min.js"></script>
-  
-    <style id="compiled-css" type="text/css">
+
+
+
+    <style>
+        html,
         body {
-    background: #FFF;
-    padding: 60px 10px; }
-  
-  header {
-    box-sizing: border-box;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: #EEE;
-    padding: 10px;
-    border-bottom: 1px solid #AAA; }
-    header input {
-      box-sizing: border-box;
-      display: block;
-      background: white;
-      border-radius: 3px;
-      box-shadow: 0 0 0 .5px #888;
-      border: none;
-      font-size: 100%;
-      padding: 5px;
-      width: 100%;
-      outline: none; }
-  
-      /* EOS */
+            margin: 0;
+            min-height: 100%;
+            font-family: system-ui, sans-serif;
+        }
+
+        header {
+            display: flex;
+            padding: 10px;
+            background: #ddd;
+        }
+
+        header>nav {
+            flex: 1;
+        }
+
+        header>nav>a {
+            padding: 10px;
+            color: green;
+        }
+
+        header>section {
+            display: flex;
+        }
+
+        header input {
+            border: 1px solid;
+            border-radius: 3px;
+            padding: 2px 5px;
+        }
+
+        .app>section {
+            padding: 20px;
+        }
     </style>
- 
-  <script>//<![CDATA[
+
+
+
+
+
+
+
+
+</head>
+
+<body translate="no">
+    <div class="app">
+        <header>
+            <nav><a href="/">Home</a><a href="/about">About</a><a href="/error">Error</a></nav>
+            <section>URL:<input readonly="true"></section>
+        </header>
+        <section>
+            <h1>404: Not Found</h1>
+            <p>It's gone :(</p>
+        </section>
+    </div>
+
+   
+
+
+
+    <script id="rendered-js" type="module">
+        import { html, Component, render } from 'https://unpkg.com/htm/preact/index.mjs?module';
+  import Router from 'https://unpkg.com/preact-router?module';
   
+  history.replaceState(0, 0, '/'); // codepen hack
   
-  const { h, Component, render } = preact; /** @jsx h */
-  const { Router } = preactRouter;
-  const { createHashHistory } = History;
-  
-  history.replaceState(0, 0, '/'); // jsfiddle hax
-  
-  const App = () => h(
-      "div",
-      null,
-      h(AddressBar, null),
-      h(
-          Router,
-          { history: createHashHistory() },
-          h(
-              "div",
-              { path: "/" },
-              h(
-                  "p",
-                  null,
-                  "all paths in preact-router are still /normal/urls. using hash history rewrites them to /#/hash/urls"
-              ),
-              "Example: ",
-              h(
-                  "a",
-                  { href: "/page2" },
-                  "page 2"
-              )
-          ),
-          h(
-              "div",
-              { path: "/page2" },
-              h(
-                  "a",
-                  { href: "/" },
-                  "back to home"
-              )
-          )
-      )
-  );
-  
-  // this is just a fake address bar
-  let AddressBar = class AddressBar extends Component {
-      componentDidMount() {
-          this.timer = setInterval(() => this.setState({}), 100);
-      }
-      componentWillUnmount() {
-          clearInterval(this.timer);
-      }
-      render() {
-          return h(
-              "header",
-              null,
-              h("input", { readonly: true, value: location.href.substring(location.origin.length) })
-          );
-      }
-  };
-  
-  
-  render(h(App, null), document.body);
-  
-  //]]>
-  //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIklubGluZSBCYWJlbCBzY3JpcHQiXSwibmFtZXMiOlsiaCIsIkNvbXBvbmVudCIsInJlbmRlciIsInByZWFjdCIsIlJvdXRlciIsInByZWFjdFJvdXRlciIsImNyZWF0ZUhhc2hIaXN0b3J5IiwiSGlzdG9yeSIsImhpc3RvcnkiLCJyZXBsYWNlU3RhdGUiLCJBcHAiLCJBZGRyZXNzQmFyIiwiY29tcG9uZW50RGlkTW91bnQiLCJ0aW1lciIsInNldEludGVydmFsIiwic2V0U3RhdGUiLCJjb21wb25lbnRXaWxsVW5tb3VudCIsImNsZWFySW50ZXJ2YWwiLCJsb2NhdGlvbiIsImhyZWYiLCJzdWJzdHJpbmciLCJvcmlnaW4iLCJsZW5ndGgiLCJkb2N1bWVudCIsImJvZHkiXSwibWFwcGluZ3MiOiJBQUFBOzs7QUFHQSxNQUFNLEVBQUVBLENBQUYsRUFBS0MsU0FBTCxFQUFnQkMsTUFBaEIsS0FBMkJDLE1BQWpDLEMsQ0FBeUM7QUFDekMsTUFBTSxFQUFFQyxNQUFGLEtBQWFDLFlBQW5CO0FBQ0EsTUFBTSxFQUFFQyxpQkFBRixLQUF3QkMsT0FBOUI7O0FBRUFDLFFBQVFDLFlBQVIsQ0FBcUIsQ0FBckIsRUFBdUIsQ0FBdkIsRUFBeUIsR0FBekIsRSxDQUErQjs7QUFFL0IsTUFBTUMsTUFBTSxNQUNYO0FBQUE7QUFBQTtBQUNDLEdBQUMsVUFBRCxPQUREO0FBR0M7QUFBQyxRQUFEO0FBQUEsSUFBUSxTQUFTSixtQkFBakI7QUFDQztBQUFBO0FBQUEsS0FBSyxNQUFLLEdBQVY7QUFDQztBQUFBO0FBQUE7QUFBQTtBQUFBLElBREQ7QUFBQTtBQUtVO0FBQUE7QUFBQSxNQUFHLE1BQUssUUFBUjtBQUFBO0FBQUE7QUFMVixHQUREO0FBUUM7QUFBQTtBQUFBLEtBQUssTUFBSyxRQUFWO0FBQ0M7QUFBQTtBQUFBLE1BQUcsTUFBSyxHQUFSO0FBQUE7QUFBQTtBQUREO0FBUkQ7QUFIRCxDQUREOztBQW9CQTtJQUNNSyxVLEdBQU4sTUFBTUEsVUFBTixTQUF5QlYsU0FBekIsQ0FBbUM7QUFDbENXLHFCQUFvQjtBQUNuQixPQUFLQyxLQUFMLEdBQWFDLFlBQWEsTUFBTSxLQUFLQyxRQUFMLENBQWMsRUFBZCxDQUFuQixFQUFzQyxHQUF0QyxDQUFiO0FBQ0E7QUFDREMsd0JBQXVCO0FBQ3RCQyxnQkFBYyxLQUFLSixLQUFuQjtBQUNBO0FBQ0RYLFVBQVM7QUFDUixTQUNDO0FBQUE7QUFBQTtBQUNDLGdCQUFPLGNBQVAsRUFBZ0IsT0FBT2dCLFNBQVNDLElBQVQsQ0FBY0MsU0FBZCxDQUF3QkYsU0FBU0csTUFBVCxDQUFnQkMsTUFBeEMsQ0FBdkI7QUFERCxHQUREO0FBS0E7QUFiaUMsQzs7O0FBaUJuQ3BCLE9BQU8sRUFBQyxHQUFELE9BQVAsRUFBZ0JxQixTQUFTQyxJQUF6Qjs7QUFJRSIsImZpbGUiOiJJbmxpbmUgQmFiZWwgc2NyaXB0Iiwic291cmNlc0NvbnRlbnQiOlsiLy88IVtDREFUQVtcblxuXG5jb25zdCB7IGgsIENvbXBvbmVudCwgcmVuZGVyIH0gPSBwcmVhY3Q7IC8qKiBAanN4IGggKi9cbmNvbnN0IHsgUm91dGVyIH0gPSBwcmVhY3RSb3V0ZXI7XG5jb25zdCB7IGNyZWF0ZUhhc2hIaXN0b3J5IH0gPSBIaXN0b3J5O1xuXG5oaXN0b3J5LnJlcGxhY2VTdGF0ZSgwLDAsJy8nKTsgLy8ganNmaWRkbGUgaGF4XG5cbmNvbnN0IEFwcCA9ICgpID0+IChcblx0PGRpdj5cblx0XHQ8QWRkcmVzc0JhciAvPlxuXG5cdFx0PFJvdXRlciBoaXN0b3J5PXtjcmVhdGVIYXNoSGlzdG9yeSgpfT5cblx0XHRcdDxkaXYgcGF0aD1cIi9cIj5cblx0XHRcdFx0PHA+XG5cdFx0XHRcdFx0YWxsIHBhdGhzIGluIHByZWFjdC1yb3V0ZXIgYXJlIHN0aWxsIC9ub3JtYWwvdXJscy5cblx0XHRcdFx0XHR1c2luZyBoYXNoIGhpc3RvcnkgcmV3cml0ZXMgdGhlbSB0byAvIy9oYXNoL3VybHNcblx0XHRcdFx0PC9wPlxuXHRcdFx0XHRFeGFtcGxlOiA8YSBocmVmPVwiL3BhZ2UyXCI+cGFnZSAyPC9hPlxuXHRcdFx0PC9kaXY+XG5cdFx0XHQ8ZGl2IHBhdGg9XCIvcGFnZTJcIj5cblx0XHRcdFx0PGEgaHJlZj1cIi9cIj5iYWNrIHRvIGhvbWU8L2E+XG5cdFx0XHQ8L2Rpdj5cblx0XHQ8L1JvdXRlcj5cblx0PC9kaXY+XG4pO1xuXG5cbi8vIHRoaXMgaXMganVzdCBhIGZha2UgYWRkcmVzcyBiYXJcbmNsYXNzIEFkZHJlc3NCYXIgZXh0ZW5kcyBDb21wb25lbnQge1xuXHRjb21wb25lbnREaWRNb3VudCgpIHtcblx0XHR0aGlzLnRpbWVyID0gc2V0SW50ZXJ2YWwoICgpID0+IHRoaXMuc2V0U3RhdGUoe30pLCAxMDApO1xuXHR9XG5cdGNvbXBvbmVudFdpbGxVbm1vdW50KCkge1xuXHRcdGNsZWFySW50ZXJ2YWwodGhpcy50aW1lcik7XG5cdH1cblx0cmVuZGVyKCkge1xuXHRcdHJldHVybiAoXG5cdFx0XHQ8aGVhZGVyPlxuXHRcdFx0XHQ8aW5wdXQgcmVhZG9ubHkgdmFsdWU9e2xvY2F0aW9uLmhyZWYuc3Vic3RyaW5nKGxvY2F0aW9uLm9yaWdpbi5sZW5ndGgpfSAvPlxuXHRcdFx0PC9oZWFkZXI+XG5cdFx0KTtcblx0fVxufVxuXG5cbnJlbmRlcig8QXBwIC8+LCBkb2N1bWVudC5ib2R5KTtcblxuXG5cbiAgLy9dXT4iXX0=</script></head>
-  <body><div><header><input readonly="true"></header><div path="/" url="/"><p>all paths in preact-router are still /normal/urls. using hash history rewrites them to /#/hash/urls</p>Example: <a href="/page2">page 2</a></div></div>
-      
-  
-      <script type="text/jsx" data-presets="es2017,react,stage-0" data-plugins="transform-decorators-legacy">//<![CDATA[
-  
-  
-  const { h, Component, render } = preact; /** @jsx h */
-  const { Router } = preactRouter;
-  const { createHashHistory } = History;
-  
-  history.replaceState(0,0,'/'); // jsfiddle hax
-  
-  const App = () => (
-      <div>
-          <AddressBar />
-  
-          <Router history={createHashHistory()}>
-              <div path="/">
-                  <p>
-                      all paths in preact-router are still /normal/urls.
-                      using hash history rewrites them to /#/hash/urls
-                  </p>
-                  Example: <a href="/page2">page 2</a>
-              </div>
-              <div path="/page2">
-                  <a href="/">back to home</a>
-              </div>
-          </Router>
-      </div>
-  );
-  
-  
-  // this is just a fake address bar
-  class AddressBar extends Component {
-      componentDidMount() {
-          this.timer = setInterval( () => this.setState({}), 100);
-      }
-      componentWillUnmount() {
-          clearInterval(this.timer);
-      }
-      render() {
-          return (
-              <header>
-                  <input readonly value={location.href.substring(location.origin.length)} />
-              </header>
-          );
-      }
+  function App() {
+    return html`
+          <div class=app>
+              <${Header} url=${this.state.url} />
+              <${Router} onChange=${e => this.setState(e)}>
+                  <${Home} path="/" />
+                  <${About} path="/about" />
+                  <${NotFound} default />
+              <//>
+          </div>
+      `;
   }
   
+  const Header = ({ url }) => html`
+      <header>
+          <nav>
+              <a href="/">Home</a>
+              <a href="/about">About</a>
+              <a href="/error">Error</a>
+          </nav>
+          <section>URL:<input readonly value=${url} /></section>
+      </header>
+  `;
   
-  render(<App />, document.body);
+  const Home = () => html`<section><h1>Home</h1><p>This is the home page.</p></section>`;
+  const About = () => html`<section><h1>About</h1><p>My name is Jason.</p></section>`;
+  const NotFound = () => html`<section><h1>404: Not Found</h1><p>It's gone :(</p></section>`;
   
-  
-  
-    //]]></script>
-  
-    <script>
-      // tell the embed parent frame the height of the content
-      if (window.parent && window.parent.parent){
-        window.parent.parent.postMessage(["resultsFrame", {
-          height: document.body.getBoundingClientRect().height,
-          slug: "gLyL6rbn"
-        }], "*")
-      }
-  
-      // always overwrite window.name, in case users try to set it manually
-      window.name = "result"
-    </script>
-  
-      <script>
-        let allLines = []
-  
-        window.addEventListener("message", (message) => {
-          if (message.data.console){
-            let insert = document.querySelector("#insert")
-            allLines.push(message.data.console.payload)
-            insert.innerHTML = allLines.join(";\r")
-  
-            let result = eval.call(null, message.data.console.payload)
-            if (result !== undefined){
-              console.log(result)
-            }
-          }
-        })
+  render(html`<${App} />`, document.body);
+  //# sourceURL=pen.js
       </script>
-  
-  
-  
-  </body></html>
+
+
+
+    
+
+
+
+
+</body>
+
+</html>
