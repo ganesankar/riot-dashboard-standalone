@@ -1,124 +1,222 @@
-<html lang="en">
+<html lang="en"><head>
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <base href="/" >
-
-    <title>CodePen - Preact + HTM + Preact-Router</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  
 
 
+  <title> - preact-enroute playground</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
-    <style>
-        html,
-        body {
-            margin: 0;
-            min-height: 100%;
-            font-family: system-ui, sans-serif;
-        }
+  
+  
+<style>
+* {
+  box-sizing: border-box;
+}
 
-        header {
-            display: flex;
-            padding: 10px;
-            background: #ddd;
-        }
-
-        header>nav {
-            flex: 1;
-        }
-
-        header>nav>a {
-            padding: 10px;
-            color: green;
-        }
-
-        header>section {
-            display: flex;
-        }
-
-        header input {
-            border: 1px solid;
-            border-radius: 3px;
-            padding: 2px 5px;
-        }
-
-        .app>section {
-            padding: 20px;
-        }
-    </style>
+html, body {
+  margin: 0;
+  padding: 50px;
+  font: 15px/1.6 Helvetica, Arial, sans-serif;
+}
 
 
+h1 {
+  font-size: 1.8rem;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+</style>
 
 
-
+  
+  
 
 
 
 </head>
 
 <body translate="no">
-    <div class="app">
-        <header>
-            <nav><a href="/">Home</a><a href="/about">About</a><a href="/error">Error</a></nav>
-            <section>URL:<input readonly="true"></section>
-        </header>
-        <section>
-            <h1>404: Not Found</h1>
-            <p>It's gone :(</p>
-        </section>
-    </div>
-
-   
-
-
-
-    <script id="rendered-js" type="module">
-        import { html, Component, render } from 'https://unpkg.com/htm/preact/index.mjs?module';
-  import Router from 'https://unpkg.com/preact-router?module';
   
-  history.replaceState(0, 0, '/'); // codepen hack
+  <script src="https://unpkg.com/preact@6"></script>
+<script src="https://unpkg.com/preact-enroute@1.2/build/browser.js"></script>
   
-  function App() {
-    return html`
-          <div class=app>
-              <${Header} url=${this.state.url} />
-              <${Router} onChange=${e => this.setState(e)} hashHistory={true}>
-                  <${Home} path="/" />
-                  <${About} path="/about" />
-                  <${NotFound} default />
-              <//>
-          </div>
-      `;
+      <script id="rendered-js">
+let { h, render, Component } = preact; /** @jsx h */
+
+let { Router, Route } = PreactEnroute;
+
+
+const getHash = hash => {
+  if (typeof hash === 'string' && hash.length) {
+    if (hash.substring(0, 1) === '#') {
+      return hash.substring(1);
+    }
+    return hash;
   }
+  return '/';
+};
+
+const state = {
+  location: getHash(window.location.hash),
+  users: [
+  { id: 1, name: 'Bob' },
+  { id: 2, name: 'Joe' }],
+
+  pets: [
+  { id: 1, userId: 1, name: 'Tobi', species: 'Ferret' },
+  { id: 2, userId: 1, name: 'Loki', species: 'Ferret' },
+  { id: 3, userId: 1, name: 'Jane', species: 'Ferret' },
+  { id: 4, userId: 2, name: 'Manny', species: 'Cat' },
+  { id: 5, userId: 2, name: 'Luna', species: 'Cat' }] };
+
+
+
+// note this is just an example, this package does not provide
+// a Link equivalent found in react-router, nor does it provide
+// bindings for tools like Redux. You'll need to wire these up
+// as desired.
+function Link({ to, children }, { navigate }) {
+  function click(e) {
+    e.preventDefault();
+    navigate(to);
+  }
+
+  return h("a", { href: to, onClick: click },
+  children);
+
+}
+
+let User = ({ user, pets }) => {
+  return (
+    h("div", null,
+    h("p", null, user.name, " has ", pets.length, " pets:"),
+    h("ul", null,
+    pets.map(pet => {
+      return h("li", { key: pet.id },
+      h(Link, { to: `/pets/${pet.id}` }, pet.name));
+
+    }))));
+
+
+
+};
+
+User = (fn => {
+  return ({ users, pets, params: { id } }) => {
+    return fn({
+      user: users.filter(u => u.id === parseInt(id, 10))[0],
+      pets: pets.filter(p => p.userId === parseInt(id, 10)) });
+
+  };
+})(User);
+
+function Pets({ pets, children }) {
+  return (
+    h("div", null,
+    h("h2", null, "Pets"),
+    h("ul", null,
+    pets.map(pet => {
+      return h("li", { key: pet.id },
+      h(Link, { to: `/pets/${pet.id}` }, pet.name));
+
+    })),
+
+    children));
+
+
+}
+
+let Pet = ({ user, pet }) => {
+  return h("p", null, pet.name, " is a ", pet.species, " and is owned by ", h(Link, { to: `/users/${user.id}` }, user.name), ".");
+};
+
+Pet = (fn => {
+  return ({ users, pets, params: { id } }) => {
+    const pet = pets.filter(p => p.id === parseInt(id, 10))[0];
+    const user = users.filter(u => u.id === pet.userId)[0];
+    return fn({ user, pet });
+  };
+})(Pet);
+
+function NotFound() {
+  return h("p", null, "404 Not Found");
+}
+
+const Index = ({ children }) => {
+  return (
+    h("div", null,
+    h("h1", null, "Pet List"),
+    h("p", null, "At least it is not a to-do list. Check out ", h(Link, { to: "/users" }, "users"), " or ", h(Link, { to: "/pets" }, "pets"), "."),
+    children));
+
+
+};
+
+const Users = ({ users, children }) => {
+  return (
+    h("div", null,
+    h("h2", null, "Users"),
+    h("ul", null,
+    users.map(user => {
+      return h("li", { key: user.id },
+      h(Link, { to: `/users/${user.id}` }, user.name));
+
+    })),
+
+    children));
+
+
+};
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = state;
+  }
+
+  componentDidMount() {
+    window.addEventListener('popstate', () => {
+      this.setState({ location: getHash(window.location.hash) });
+    });
+  }
+
+  getChildContext() {
+    return {
+      navigate: path => {
+        window.location.hash = path;
+        this.setState({ location: path });
+      } };
+
+  }
+
+  render() {
+    return (
+      h(Router, this.state,
+      h(Route, { path: "/", component: Index }),
+      h(Route, { path: "/users", component: Users }),
+      h(Route, { path: "/users/:id", component: User }),
+      h(Route, { path: "/pets", component: Pets }),
+      h(Route, { path: "/pets/:id", component: Pet }),
+      h(Route, { path: "*", component: NotFound })));
+
+
+  }}
+
+
+render(h(App, null), document.body);
+//# sourceURL=pen.js
+    </script>
+
   
-  const Header = ({ url }) => html`
-      <header>
-          <nav>
-              <a href="/">Home</a>
-              <a href="/about">About</a>
-              <a href="/error">Error</a>
-          </nav>
-          <section>URL:<input readonly value=${url} /></section>
-      </header>
-  `;
-  
-  const Home = () => html`<section><h1>Home</h1><p>This is the home page.</p></section>`;
-  const About = () => html`<section><h1>About</h1><p>My name is Jason.</p></section>`;
-  const NotFound = () => html`<section><h1>404: Not Found</h1><p>It's gone :(</p></section>`;
-  
-  render(html`<${App} />`, document.body);
-  //# sourceURL=pen.js
-      </script>
-
-
-
-    
 
 
 
 
-</body>
-
-</html>
+ 
+<p>Loki is a Ferret and is owned by <a href="/users/1">Bob</a>.</p></body></html>
