@@ -4,7 +4,7 @@
 
     <meta charset="UTF-8">
 
-
+    <base href="/" >
 
     <title>CodePen - Preact + HTM + Preact-Router</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,7 +84,7 @@
     return html`
           <div class=app>
               <${Header} url=${this.state.url} />
-              <${Router} onChange=${e => this.setState(e)}>
+              <${Router} onChange=${e => this.setState(e)} hashHistory={true}>
                   <${Home} path="/" />
                   <${About} path="/about" />
                   <${NotFound} default />
